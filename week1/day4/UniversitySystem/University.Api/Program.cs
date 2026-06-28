@@ -12,13 +12,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Host.ConfigureContainer<ContainerBuilder>(container =>
 {
-    container.RegisterModule(new StudentModule());
+    container.RegisterModule(new RepositoryModule());
     container.RegisterModule(new ServiceModule());
 });
 
 builder.Services.AddControllers();
 builder.Services.AddDbContext<UniversityDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
