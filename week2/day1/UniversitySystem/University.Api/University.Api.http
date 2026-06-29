@@ -1,0 +1,40 @@
+@University.Api_HostAddress = http://localhost:5165
+
+### Get all students
+GET {{University.Api_HostAddress}}/api/students
+Accept: application/json
+
+###
+
+### Get student by ID
+GET {{University.Api_HostAddress}}/api/students/1
+Accept: application/json
+
+###
+
+### Create a student
+POST {{University.Api_HostAddress}}/api/students
+Content-Type: application/json
+
+{
+  "name": "Alice Johnson",
+  "email": "alice@university.edu"
+}
+
+###
+
+### Update a student
+PUT {{University.Api_HostAddress}}/api/students/1
+Content-Type: application/json
+
+{
+  "name": "Alice Smith",
+  "email": "alice.smith@university.edu"
+}
+
+###
+
+### Delete a student
+DELETE {{University.Api_HostAddress}}/api/students/1
+
+###
