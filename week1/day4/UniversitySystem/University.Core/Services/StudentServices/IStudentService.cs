@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using University.Core.DTOs;
-using University.Core.Forms;
+using University.Core.Forms.StudentForm;
 using University.Data.Entities;
 
-namespace University.Core.Services;
+namespace University.Core.Services.StudentService;
 
 public interface IStudentService
 {

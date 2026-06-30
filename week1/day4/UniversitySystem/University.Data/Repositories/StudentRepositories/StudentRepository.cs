@@ -1,6 +1,7 @@
 ﻿using University.Data.Entities;
+using University.Data.Repositories.StudentRepositories.StudentRepositories;
 
-namespace University.Data.Repositories;
+namespace University.Data.Repositories.StudentRepositories;
 
 public class StudentRepository : IStudentRepository
 {

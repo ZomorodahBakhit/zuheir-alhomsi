@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using University.Data.Repositories;
+using University.Data.Repositories.StudentRepositories;
 
 namespace University.Api.Modules;
 

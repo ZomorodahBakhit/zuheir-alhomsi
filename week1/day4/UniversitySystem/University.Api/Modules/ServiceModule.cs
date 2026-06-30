@@ -1,5 +1,5 @@
 ﻿using Autofac;
-using University.Core.Services;
+using University.Core.Services.StudentService;
 namespace University.Api.Modules;
 
 public class ServiceModule: Autofac.Module

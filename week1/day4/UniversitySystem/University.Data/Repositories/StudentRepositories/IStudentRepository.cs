@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using University.Data.Entities;
 
-namespace University.Data.Repositories;
+namespace University.Data.Repositories.StudentRepositories.StudentRepositories;
 
 public interface IStudentRepository
 {

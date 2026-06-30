@@ -1,0 +1,3078 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+University.Api/appsettings.Development.json
+University.Api/appsettings.json
+University.Api/Controllers/AuthController.cs
+University.Api/Controllers/CoursesController.cs
+University.Api/Controllers/StudentsController.cs
+University.Api/Filters/ApiExceptionFilter.cs
+University.Api/Helpers/JWTTokenHelper.cs
+University.Api/Logs/log-20260630.txt
+University.Api/Modules/RepositoryModule.cs
+University.Api/Modules/ServiceModule.cs
+University.Api/Program.cs
+University.Api/Properties/launchSettings.json
+University.Api/University.Api.csproj
+University.Api/University.Api.http
+University.Core/DTOs/CourseDto.cs
+University.Core/DTOs/StudentDto.cs
+University.Core/DTOs/UserDto.cs
+University.Core/Exceptions/BusinessException.cs
+University.Core/Exceptions/NotFoundException.cs
+University.Core/Forms/AuthForm/LoginForm.cs
+University.Core/Forms/AuthForm/RegisterForm.cs
+University.Core/Forms/CourseForm/CreateCourseForm.cs
+University.Core/Forms/CourseForm/UpdateCourseForm.cs
+University.Core/Forms/StudentForm/CreateStudentForm.cs
+University.Core/Forms/StudentForm/UpdateStudentForm.cs
+University.Core/Services/AuthService.cs
+University.Core/Services/CourseServices/CourseService.cs
+University.Core/Services/CourseServices/ICourseService.cs
+University.Core/Services/StudentServices/IStudentService.cs
+University.Core/Services/StudentServices/StudentService.cs
+University.Core/University.Core.csproj
+University.Core/Validation/FormValidator.cs
+University.Core/Validation/FormValidatorResult.cs
+University.Data/Entities/Course.cs
+University.Data/Entities/Role.cs
+University.Data/Entities/Student.cs
+University.Data/Entities/User.cs
+University.Data/Migrations/20260627195812_InitialCreate.cs
+University.Data/Migrations/20260627195812_InitialCreate.Designer.cs
+University.Data/Migrations/20260629100435_InitialCreate1.cs
+University.Data/Migrations/20260629100435_InitialCreate1.Designer.cs
+University.Data/Migrations/20260630093737_AddIdentity.cs
+University.Data/Migrations/20260630093737_AddIdentity.Designer.cs
+University.Data/Migrations/20260630093956_Roles.cs
+University.Data/Migrations/20260630093956_Roles.Designer.cs
+University.Data/Migrations/UniversityDbContextModelSnapshot.cs
+University.Data/Repositories/CourseRepositories/CourseRepository.cs
+University.Data/Repositories/CourseRepositories/ICourseRepository.cs
+University.Data/Repositories/StudentRepositories/IStudentRepository.cs
+University.Data/Repositories/StudentRepositories/StudentRepository.cs
+University.Data/University.Data.csproj
+University.Data/UniversityDbContext.cs
+UniversitySystem.slnx
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="University.Api/appsettings.Development.json">
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  }
+}
+</file>
+
+<file path="University.Api/appsettings.json">
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost;Database=UniversityDb;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True"
+  },
+  "JwtSettings": {
+    "Issuer": "https://localhost:5165",
+    "Audience": "https://localhost:5165",
+    "SecretKey": "7G*jsD93@lSkfHe019s8QYvTmvNg1rT#XksdZfa7JLKdPt4v7MvxcVJZhguZXTwe"
+  },
+  "Logging": {
+      "LogLevel": {
+        "Default": "Information",
+        "Microsoft.AspNetCore": "Warning"
+      }
+    },
+    "AllowedHosts": "*"
+  }
+</file>
+
+<file path="University.Api/Controllers/AuthController.cs">
+using AutoWrapper.Wrappers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using University.Api.Filters;
+using University.Api.Helpers;
+using University.Core.Forms.AuthForm;
+using University.Core.Services;
+
+namespace University.Api.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+[TypeFilter(typeof(ApiExceptionFilter))]
+public class AuthController : ControllerBase
+{
+    private readonly IJwtTokenHelper _jwtTokenService;
+    private readonly IAuthService _authService;
+
+    public AuthController(IJwtTokenHelper jwtTokenHelper, IAuthService authService)
+    {
+        _jwtTokenService = jwtTokenHelper;
+        _authService = authService;
+    }
+
+    [HttpPost("register")]
+    public async Task<ApiResponse> Register([FromBody] RegisterForm form)
+    {
+        var dto = await _authService.Register(form);
+        return new ApiResponse("User registered successfully", dto);
+    }
+
+    [HttpPost("login")]
+    public async Task<ApiResponse> Login([FromBody] LoginForm form)
+    {
+        var user = await _authService.Login(form);
+        var token = _jwtTokenService.GenerateToken(user);
+        return new ApiResponse("Login successful", token);
+    }
+
+    [Authorize(Roles = "Student")]
+    [HttpGet("me")]
+    public ApiResponse GetMyInfo()
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var role = User.FindFirstValue(ClaimTypes.Role);
+
+        var logger = HttpContext.RequestServices.GetRequiredService<ILogger<AuthController>>();
+        logger.LogInformation("User accessed /me: ID={Id}, Role={Role}, Email={Email}", userId, role, email);
+
+        return new ApiResponse("User identity info retrieved", new
+        {
+            Id = userId,
+            Email = email,
+            Role = role
+        });
+    }
+}
+</file>
+
+<file path="University.Api/Controllers/CoursesController.cs">
+using AutoWrapper.Wrappers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using University.Core.DTOs;
+using University.Core.Forms.CourseForm;
+using University.Core.Services.CourseService;
+
+namespace University.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class CoursesController : ControllerBase
+    {
+        private readonly ICourseService _service;
+        private readonly ILogger<CoursesController> _logger;
+
+        public CoursesController(ICourseService courseService, ILogger<CoursesController> logger)
+        {
+            _service = courseService;
+            _logger = logger;
+        }
+
+        [HttpGet]
+        [ProducesResponseType(typeof(List<CourseDto>), 200)]
+        public ApiResponse GetAll()
+        {
+            _logger.LogInformation("Incoming request to get all courses");
+            return new ApiResponse(_service.GetAll());
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(CourseDto), 200)]
+        [ProducesResponseType(404)]
+        public ApiResponse GetById(int id)
+        {
+            _logger.LogInformation("Incoming request to get Course with ID: {CourseId}", id);
+            var course = _service.GetById(id);
+            return new ApiResponse(course);
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+
+        public ApiResponse Create([FromBody] CreateCourseForm form)
+        {
+            _logger.LogInformation("Incoming request to create course with Name: {CourseName}", form.Name);
+            _service.Create(form);
+            return new ApiResponse("Course created successfully");
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public ApiResponse Update(int id, [FromBody] UpdateCourseForm form)
+        {
+            _logger.LogInformation("Incoming request to update Course with ID: {CourseId}", id);
+            _service.Update(id, form);
+            return new ApiResponse("Course updated successfully");
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public ApiResponse Delete(int id)
+        {
+            _logger.LogInformation("Incoming request to delete Course with ID: {CourseId}", id);
+            _service.Delete(id);
+            return new ApiResponse("Course deleted successfully");
+        }
+    }
+}
+</file>
+
+<file path="University.Api/Controllers/StudentsController.cs">
+using AutoWrapper.Wrappers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using University.Core.DTOs;
+using University.Core.Forms.StudentForm;
+using University.Core.Services.StudentService;
+
+namespace University.Api.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class StudentsController : ControllerBase
+    {
+        private readonly IStudentService _service;
+        private readonly ILogger<StudentsController> _logger;
+
+        public StudentsController(IStudentService studentService, ILogger<StudentsController> logger)
+        {
+            _service = studentService;
+            _logger = logger;
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpGet]
+        [ProducesResponseType(typeof(List<StudentDto>), 200)]
+        public ApiResponse GetAll()
+        {
+            _logger.LogInformation("Incoming request to get all students");
+            return new ApiResponse(_service.GetAll());
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(StudentDto), 200)]
+        [ProducesResponseType(404)]
+        public ApiResponse GetById(int id)
+        {
+            _logger.LogInformation("Incoming request received for Student ID: {StudentId}", id);
+            var student = _service.GetById(id);
+            return new ApiResponse(student);
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public ApiResponse Create([FromBody] CreateStudentForm form)
+        {
+            _logger.LogInformation("Incoming request to create student with Email: {Email}", form.Email);
+            _service.Create(form);
+            return new ApiResponse("Student created successfully");
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpPut("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
+        public ApiResponse Update(int id, [FromBody] UpdateStudentForm form)
+        {
+            _logger.LogInformation("Incoming request to update Student with ID: {StudentId}", id);
+            _service.Update(id, form);
+            return new ApiResponse("Student updated successfully");
+        }
+
+        [Authorize(Roles = "Teacher")]
+        [HttpDelete("{id}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public ApiResponse Delete(int id)
+        {
+            _logger.LogInformation("Incoming request to delete Student with ID: {StudentId}", id);
+            _service.Delete(id);
+            return new ApiResponse("Student deleted successfully");
+        }
+    }
+}
+</file>
+
+<file path="University.Api/Filters/ApiExceptionFilter.cs">
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using University.Core.Exceptions;
+
+namespace University.Api.Filters;
+
+public class ApiExceptionFilter : IExceptionFilter
+{
+    public void OnException(ExceptionContext context)
+    {
+        switch (context.Exception)
+        {
+            case NotFoundException notFoundEx:
+                context.Result = new NotFoundObjectResult(new
+                {
+                    error = "Not Found",
+                    message = notFoundEx.Message,
+                    statusCode = 404
+                });
+                context.ExceptionHandled = true;
+                break;
+
+            case BusinessException businessEx:
+                context.Result = new BadRequestObjectResult(new
+                {
+                    error = "Bad Request",
+                    message = businessEx.Message,
+                    statusCode = 400
+                });
+                context.ExceptionHandled = true;
+                break;
+
+            default:
+                context.Result = new ObjectResult(new
+                {
+                    error = "Internal Server Error",
+                    message = "An unexpected error occurred on the server.",
+                    statusCode = 500
+                })
+                {
+                    StatusCode = 500
+                };
+                context.ExceptionHandled = true;
+                break;
+        }
+    }
+}
+</file>
+
+<file path="University.Api/Helpers/JWTTokenHelper.cs">
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using University.Core.DTOs;
+
+namespace University.Api.Helpers;
+
+public class JwtTokenHelper : IJwtTokenHelper
+{
+    private readonly IConfiguration _config;
+
+    public JwtTokenHelper(IConfiguration config)
+    {
+        _config = config;
+    }
+
+    public string GenerateToken(UserDto user)
+    {
+        var jwtSettings = _config.GetSection("JwtSettings");
+        var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
+        var creds = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha512Signature);
+
+        var claims = new[]
+        {
+        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+        new Claim(ClaimTypes.Email, user.Email ?? ""),
+        new Claim(ClaimTypes.Role, user.Role ?? "Student")
+    };
+
+        var tokenDescriptor = new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.UtcNow.AddDays(1),
+            SigningCredentials = creds,
+            Issuer = jwtSettings["Issuer"],
+            Audience = jwtSettings["Audience"],
+        };
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var token = tokenHandler.CreateToken(tokenDescriptor);
+
+        return tokenHandler.WriteToken(token);
+    }
+}
+public interface IJwtTokenHelper
+{
+    string GenerateToken(UserDto user);
+}
+</file>
+
+<file path="University.Api/Logs/log-20260630.txt">
+2026-06-30 15:32:55.547 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 15:32:56.869 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 15:32:56.871 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 15:32:57.507 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 15:32:57.507 +03:00 [INF] Hosting environment: Development
+2026-06-30 15:32:57.507 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+2026-06-30 15:33:42.392 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 15:33:43.270 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 15:33:43.272 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 15:33:44.638 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 15:33:44.638 +03:00 [INF] Hosting environment: Development
+2026-06-30 15:33:44.638 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+</file>
+
+<file path="University.Api/Modules/RepositoryModule.cs">
+using Autofac;
+using University.Data.Repositories.StudentRepositories;
+
+namespace University.Api.Modules;
+
+public class RepositoryModule : Autofac.Module
+{
+    protected override void Load(ContainerBuilder builder)
+    {
+        builder.RegisterAssemblyTypes(typeof(StudentRepository).Assembly)
+              .Where(t => t.Name.EndsWith("Repository"))
+              .AsImplementedInterfaces()
+              .InstancePerLifetimeScope();
+    }
+}
+</file>
+
+<file path="University.Api/Modules/ServiceModule.cs">
+using Autofac;
+using University.Core.Services.StudentService;
+namespace University.Api.Modules;
+
+public class ServiceModule: Autofac.Module
+{
+    protected override void Load(ContainerBuilder builder)
+    {
+        builder.RegisterAssemblyTypes(typeof(StudentService).Assembly)
+        .Where(t => t.Name.EndsWith("Service"))
+        .AsImplementedInterfaces()
+        .InstancePerLifetimeScope();
+    }
+}
+</file>
+
+<file path="University.Api/Program.cs">
+using Autofac;
+using Autofac.Extensions.DependencyInjection;
+using AutoWrapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Serilog;
+using System.Text;
+using University.Api.Filters;
+using University.Api.Modules;
+using University.Data;
+using University.Data.Entities;
+
+var builder = WebApplication.CreateBuilder(args);
+
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
+builder.Host.ConfigureContainer<ContainerBuilder>(container =>
+{
+    container.RegisterModule(new RepositoryModule());
+    container.RegisterModule(new ServiceModule());
+});
+
+builder.Services.AddScoped<University.Api.Helpers.IJwtTokenHelper, University.Api.Helpers.JwtTokenHelper>();
+
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ApiExceptionFilter>();
+});
+
+builder.Services.AddIdentity<User, Role>()
+    .AddEntityFrameworkStores<UniversityDbContext>()
+    .AddDefaultTokenProviders();
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var secretKey = jwtSettings["SecretKey"];
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtSettings["Issuer"],
+        ValidAudience = jwtSettings["Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey!))
+    };
+});
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please insert JWT with Bearer into field",
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] { }
+        }
+    });
+});
+
+
+builder.Services.AddDbContext<UniversityDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseHttpsRedirection();
+app.UseApiResponseAndExceptionWrapper();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
+
+app.Run();
+</file>
+
+<file path="University.Api/Properties/launchSettings.json">
+{
+  "$schema": "https://json.schemastore.org/launchsettings.json",
+  "profiles": {
+    "http": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5165",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "https": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "https://localhost:7162;http://localhost:5165",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+</file>
+
+<file path="University.Api/University.Api.csproj">
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="9.3.0" />
+    <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="11.0.1" />
+    <PackageReference Include="AutoWrapper.Core" Version="4.5.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.9">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Serilog.AspNetCore" Version="10.0.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\University.Core\University.Core.csproj" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="University.Api/University.Api.http">
+@University.Api_HostAddress = http://localhost:5165
+
+### Get all students
+GET {{University.Api_HostAddress}}/api/students
+Accept: application/json
+
+###
+
+### Get student by ID
+GET {{University.Api_HostAddress}}/api/students/1
+Accept: application/json
+
+###
+
+### Create a student
+POST {{University.Api_HostAddress}}/api/students
+Content-Type: application/json
+
+{
+  "name": "Alice Johnson",
+  "email": "alice@university.edu"
+}
+
+###
+
+### Update a student
+PUT {{University.Api_HostAddress}}/api/students/1
+Content-Type: application/json
+
+{
+  "name": "Alice Smith",
+  "email": "alice.smith@university.edu"
+}
+
+###
+
+### Delete a student
+DELETE {{University.Api_HostAddress}}/api/students/1
+
+###
+</file>
+
+<file path="University.Core/DTOs/CourseDto.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace University.Core.DTOs;
+
+public class CourseDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public int? TeacherId { get; set; }
+    public  DateTime StartDate { get; set; }
+    public  DateTime EndDate { get; set; }
+    public int? SyllabusId { get; set; }
+    }
+</file>
+
+<file path="University.Core/DTOs/StudentDto.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace University.Core.DTOs;
+
+public class StudentDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+}
+</file>
+
+<file path="University.Core/DTOs/UserDto.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace University.Core.DTOs;
+
+public class UserDto
+{
+    public int Id { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public bool EmailConfirmed { get; set; }
+    public string Phone { get; set; }
+    public bool PhoneNumberConfirmed { get; set; }
+    public string Role { get; set; }
+}
+</file>
+
+<file path="University.Core/Exceptions/BusinessException.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace University.Core.Exceptions
+{
+    public class BusinessException: Exception
+    {
+        public BusinessException(string message) : base(message)
+        {
+
+        }
+    }
+}
+</file>
+
+<file path="University.Core/Exceptions/NotFoundException.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace University.Core.Exceptions;
+
+public class NotFoundException : Exception
+{
+    public NotFoundException(string message) : base(message) { 
+        
+    }
+
+}
+</file>
+
+<file path="University.Core/Forms/AuthForm/LoginForm.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Forms.AuthForm;
+
+public class LoginForm
+{
+    [Required]
+    [EmailAddress]
+    public string Email { get; set; }
+    [Required]
+    public string Password { get; set; }
+    public bool RememberMe { get; set; } = false;
+}
+</file>
+
+<file path="University.Core/Forms/AuthForm/RegisterForm.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Forms.AuthForm;
+
+public class RegisterForm
+{
+    [Required]
+    public string FirstName { get; set; }
+    [Required]
+    public string LastName { get; set; }
+    [Required]
+    public string Email { get; set; }
+    [Required]
+    [MinLength(6)]
+    public string Password { get; set; }
+    [Required]
+    public string Role { get; set; }
+}
+</file>
+
+<file path="University.Core/Forms/CourseForm/CreateCourseForm.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Forms.CourseForm;
+
+public class CreateCourseForm
+{
+    [Required(ErrorMessage = "Course Name is required")]
+    [MinLength(2, ErrorMessage = "Course Name must be at least 2 characters")]
+    public required string Name { get; set; }
+    public int? TeacherId  { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public int? SyllabusId { get; set; } 
+}
+</file>
+
+<file path="University.Core/Forms/CourseForm/UpdateCourseForm.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Forms.CourseForm;
+
+public class UpdateCourseForm
+{
+    [Required(ErrorMessage = "Course Name is required")]
+    [MinLength(2, ErrorMessage = "Course Name must be at least 2 characters")]
+    public required string Name { get; set; }
+    public int? TeacherId { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public int? SyllabusId { get; set; }
+}
+</file>
+
+<file path="University.Core/Forms/StudentForm/CreateStudentForm.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Forms.StudentForm;
+
+public class CreateStudentForm
+{
+    [Required(ErrorMessage = "First Name is required")]
+    [MinLength(2, ErrorMessage = "First Name must be at least 2 characters")]
+    public required string Name { get; set; }
+
+    [Required(ErrorMessage = "Email address is required")]
+    [EmailAddress(ErrorMessage = "The submitted format is not a valid email")]
+    public required string Email { get; set; }
+}
+</file>
+
+<file path="University.Core/Forms/StudentForm/UpdateStudentForm.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Forms.StudentForm;
+
+public class UpdateStudentForm
+{
+    [Required(ErrorMessage = "First Name is required")]
+    [MinLength(2, ErrorMessage = "First Name must be at least 2 characters")]
+    public required string Name { get; set; }
+
+    [Required(ErrorMessage = "Email address is required")]
+    [EmailAddress(ErrorMessage = "The submitted format is not a valid email")]
+    public required string Email { get; set; }
+}
+</file>
+
+<file path="University.Core/Services/AuthService.cs">
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
+using University.Core.DTOs;
+using University.Core.Exceptions;
+using University.Core.Forms.AuthForm;
+using University.Core.Validation;
+using University.Data.Entities;
+
+namespace University.Core.Services;
+
+public interface IAuthService
+{
+    Task<UserDto> Login(LoginForm form);
+    Task<UserDto> Register(RegisterForm form);
+}
+
+public class AuthService : IAuthService
+{
+    private readonly UserManager<User> _userManager;
+    private readonly RoleManager<Role> _roleManager;
+    private readonly ILogger<AuthService> _logger;
+
+    public AuthService(
+        ILogger<AuthService> logger,
+        UserManager<User> userManager,
+        RoleManager<Role> roleManager)
+    {
+        _logger = logger;
+        _userManager = userManager;
+        _roleManager = roleManager;
+    }
+
+    public async Task<UserDto> Register(RegisterForm form)
+    {
+        var validation = FormValidator.Validate(form);
+        if (!validation.IsValid) throw new BusinessException("Invalid form data");
+
+        var userExists = await _userManager.FindByEmailAsync(form.Email);
+        if (userExists != null) throw new BusinessException("User already exists with this email");
+
+        var user = new User
+        {
+            Email = form.Email,
+            UserName = form.Email,
+        };
+
+        var result = await _userManager.CreateAsync(user, form.Password);
+        if (!result.Succeeded)
+        {
+            var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+            throw new BusinessException($"User creation failed: {errors}");
+        }
+
+        if (!await _roleManager.RoleExistsAsync(form.Role))
+        {
+            throw new BusinessException("Invalid role");
+        }
+        await _userManager.AddToRoleAsync(user, form.Role);
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Role = form.Role
+        };
+    }
+
+    public async Task<UserDto> Login(LoginForm form)
+    {
+        var user = await _userManager.FindByEmailAsync(form.Email);
+        if (user == null || !await _userManager.CheckPasswordAsync(user, form.Password))
+        {
+            throw new BusinessException("Invalid credentials");
+        }
+
+        var roles = await _userManager.GetRolesAsync(user);
+        var role = roles.FirstOrDefault() ?? "Student";
+
+        return new UserDto
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Role = role
+        };
+    }
+}
+</file>
+
+<file path="University.Core/Services/CourseServices/CourseService.cs">
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using University.Core.DTOs;
+using University.Core.Exceptions;
+using University.Core.Forms.CourseForm;
+using University.Core.Validation;
+using University.Data.Entities;
+using University.Data.Repositories.CourseRepository;
+
+namespace University.Core.Services.CourseService;
+
+public class CourseService : ICourseService
+{
+    private readonly ICourseRepository _repository;
+    private readonly ILogger<CourseService> _logger;
+
+    public CourseService(ICourseRepository repository, ILogger<CourseService> logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
+
+    public List<CourseDto> GetAll()
+    {
+        return _repository.GetAll()
+            .Select(c => new CourseDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                TeacherId = c.TeacherId,
+                StartDate = c.StartDate,
+                EndDate = c.EndDate,
+                SyllabusId = c.SyllabusId
+            }).ToList();
+    }
+
+    public CourseDto? GetById(int id)
+    {
+        var course = _repository.GetById(id);
+        if (course == null)
+        {
+            _logger.LogError("Course with ID {CourseId} was not found", id);
+            throw new NotFoundException("Course Not Found");
+        }
+
+        return new CourseDto
+        {
+            Id = course.Id,
+            Name = course.Name,
+            TeacherId = course.TeacherId,
+            StartDate = course.StartDate,
+            EndDate = course.EndDate,
+            SyllabusId = course.SyllabusId
+        };
+    }
+
+    public void Create(CreateCourseForm form)
+    {
+        var validation = FormValidator.Validate(form);
+
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Validation failed for CreateCourse payload. Errors: {@ValidationErrors}", validation.Errors);
+            throw new BusinessException("The Course Form is invalid");
+        }
+
+        var course = new Course
+        {
+            Name = form.Name,
+            TeacherId = form.TeacherId,
+            StartDate = form.StartDate,
+            EndDate = form.EndDate,
+            SyllabusId = form.SyllabusId
+        };
+        _repository.Add(course);
+    }
+
+    public void Update(int id, UpdateCourseForm form)
+    {
+        var course = _repository.GetById(id);
+        if (course == null)
+        {
+            _logger.LogError("Course with ID {CourseId} was not found for update", id);
+            throw new NotFoundException("Course Not Found");
+        }
+
+        var validation = FormValidator.Validate(form);
+
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Validation failed for UpdateCourse payload. Errors: {@ValidationErrors}", validation.Errors);
+            throw new BusinessException("The Course Form is invalid");
+        }
+
+        course.Name = form.Name;
+        course.TeacherId = form.TeacherId;
+        course.StartDate = form.StartDate;
+        course.EndDate = form.EndDate;
+        course.SyllabusId = form.SyllabusId;
+
+        _repository.Update(course);
+    }
+
+    public void Delete(int id)
+    {
+        var course = _repository.GetById(id);
+        if (course == null)
+        {
+            _logger.LogError("Course with ID {CourseId} was not found for deletion", id);
+            throw new NotFoundException("Course Not Found");
+        }
+
+        _repository.Delete(id);
+    }
+}
+</file>
+
+<file path="University.Core/Services/CourseServices/ICourseService.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using University.Core.DTOs;
+using University.Core.Forms.CourseForm;
+using University.Core.Forms.StudentForm;
+
+namespace University.Core.Services.CourseService;
+
+public interface ICourseService
+{
+    List<CourseDto> GetAll();
+    CourseDto? GetById(int id);
+    void Create(CreateCourseForm form);
+    void Update(int id, UpdateCourseForm form);
+    void Delete(int id);
+}
+</file>
+
+<file path="University.Core/Services/StudentServices/IStudentService.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using University.Core.DTOs;
+using University.Core.Forms.StudentForm;
+using University.Data.Entities;
+
+namespace University.Core.Services.StudentService;
+
+public interface IStudentService
+{
+    List<StudentDto> GetAll();
+    StudentDto? GetById(int id);
+    void Create(CreateStudentForm form);
+    void Update(int id, UpdateStudentForm form);
+    void Delete(int id);
+}
+</file>
+
+<file path="University.Core/Services/StudentServices/StudentService.cs">
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using University.Core.DTOs;
+using University.Core.Exceptions;
+using University.Core.Forms.StudentForm;
+using University.Core.Validation;
+using University.Data.Entities;
+using University.Data.Repositories.StudentRepositories.StudentRepositories;
+
+namespace University.Core.Services.StudentService;
+
+public class StudentService : IStudentService
+{
+    private readonly IStudentRepository _repository;
+    private readonly ILogger<StudentService> _logger;
+
+    public StudentService(IStudentRepository repository , ILogger<StudentService> logger)
+    {
+        _repository = repository;
+        _logger = logger;
+    }
+    public List<StudentDto> GetAll()
+    {
+        return _repository.GetAll().Select(s => new StudentDto { Id = s.Id, Name = s.Name , Email = s.Email }).ToList();
+    }
+
+    public StudentDto? GetById(int id)
+    {
+        var student = _repository.GetById(id);
+        if (student == null) throw new NotFoundException("Student Not Found");
+        return new StudentDto
+        {
+            Id = student.Id,
+            Name = student.Name,
+            Email = student.Email,
+        };
+    }
+    public void Create(CreateStudentForm form)
+    {
+        var validation = FormValidator.Validate(form);
+
+        if (!validation.IsValid)
+        {
+            _logger.LogWarning("Validation failed for CreateStudent payload. Errors: {@ValidationErrors}", validation.Errors);
+            throw new BusinessException("The Student Form is invalid");
+        }
+
+        var student = new Student
+        {
+            Name = form.Name,
+            Email = form.Email
+        };
+        _repository.Add(student);
+    }
+
+    public void Update(int id, UpdateStudentForm form)
+    {
+        var student = _repository.GetById(id);
+        if (student == null) throw new NotFoundException("Student Not Found");
+
+        if (!FormValidator.Validate(form).IsValid)
+        {
+            throw new BusinessException("The Student Form is invalid");
+        }
+
+        bool emailFound = _repository.GetAll()
+            .Any(s => s.Id != id && s.Email.Equals(form.Email, StringComparison.OrdinalIgnoreCase));
+
+        if (emailFound) throw new BusinessException("A student email already exists");
+       
+
+        student.Name = form.Name;
+        student.Email = form.Email;
+        _repository.Update(student);
+    }
+
+    public void Delete(int id)
+    {
+        var student = _repository.GetById(id);
+        if (student == null) throw new NotFoundException("Student Not Found");
+        _repository.Delete(id);
+    }
+}
+</file>
+
+<file path="University.Core/University.Core.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\University.Data\University.Data.csproj" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="University.Core/Validation/FormValidator.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Validation;
+
+public class FormValidator
+{
+    public static FormValidatorResults Validate(object model)
+    {
+        var context = new ValidationContext(model, serviceProvider: null, items: null);
+        var results = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(model, context, results, true);
+        return new FormValidatorResults(isValid, results);
+    }
+}
+</file>
+
+<file path="University.Core/Validation/FormValidatorResult.cs">
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Text;
+
+namespace University.Core.Validation;
+
+public class FormValidatorResults
+{
+    public bool IsValid { get; set; }
+    public Dictionary<string, List<string>> Errors { get; set; }
+    public FormValidatorResults(bool isValid, List<ValidationResult> results)
+    {
+        IsValid = isValid;
+        if (!isValid && results != null)
+        {
+            Errors = new Dictionary<string, List<string>>();
+            foreach (var item in results)
+            {
+                var message = item.ErrorMessage;
+                foreach (var memeber in item.MemberNames)
+                {
+                    if (!Errors.ContainsKey(memeber))
+                        Errors.Add(memeber, new List<string>());
+                    Errors[memeber].Add(message ?? string.Empty);
+                }
+            }
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Entities/Course.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace University.Data.Entities;
+
+public class Course
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+    public int? TeacherId { get; set; }
+    public required DateTime StartDate { get; set; } 
+    public required DateTime EndDate { get; set; }
+    public int? SyllabusId { get; set; }
+}
+</file>
+
+<file path="University.Data/Entities/Role.cs">
+using Microsoft.AspNetCore.Identity;
+
+namespace University.Data.Entities;
+
+public class Role : IdentityRole<int>
+{
+}
+</file>
+
+<file path="University.Data/Entities/Student.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace University.Data.Entities;
+
+public class Student
+{
+    public int Id { get; set; }
+    public required string Name { get; set; }
+    public required string Email { get; set; }
+}
+</file>
+
+<file path="University.Data/Entities/User.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using Microsoft.AspNetCore.Identity;
+
+namespace University.Data.Entities;
+
+public class User : IdentityUser<int>
+{
+}
+</file>
+
+<file path="University.Data/Migrations/20260627195812_InitialCreate.cs">
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialCreate : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Students",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Students", x => x.Id);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Students");
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/20260627195812_InitialCreate.Designer.cs">
+// <auto-generated />
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using University.Data;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    [DbContext(typeof(UniversityDbContext))]
+    [Migration("20260627195812_InitialCreate")]
+    partial class InitialCreate
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("University.Data.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/20260629100435_InitialCreate1.cs">
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    /// <inheritdoc />
+    public partial class InitialCreate1 : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.CreateTable(
+                name: "Course",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TeacherId = table.Column<int>(type: "int", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SyllabusId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Course", x => x.Id);
+                });
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "Course");
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/20260629100435_InitialCreate1.Designer.cs">
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using University.Data;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    [DbContext(typeof(UniversityDbContext))]
+    [Migration("20260629100435_InitialCreate1")]
+    partial class InitialCreate1
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("University.Data.Entities.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SyllabusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Course");
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/20260630093737_AddIdentity.cs">
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    /// <inheritdoc />
+    public partial class AddIdentity : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_Course",
+                table: "Course");
+
+            migrationBuilder.RenameTable(
+                name: "Course",
+                newName: "Courses");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_Courses",
+                table: "Courses",
+                column: "Id");
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserClaims_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserLogins",
+                columns: table => new
+                {
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserLogins", x => new { x.LoginProvider, x.ProviderKey });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserLogins_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AspNetUserRoles_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUserTokens",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUserTokens", x => new { x.UserId, x.LoginProvider, x.Name });
+                    table.ForeignKey(
+                        name: "FK_AspNetUserTokens_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetRoleClaims_RoleId",
+                table: "AspNetRoleClaims",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "RoleNameIndex",
+                table: "AspNetRoles",
+                column: "NormalizedName",
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserClaims_UserId",
+                table: "AspNetUserClaims",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserLogins_UserId",
+                table: "AspNetUserLogins",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AspNetUserRoles_RoleId",
+                table: "AspNetUserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropTable(
+                name: "AspNetRoleClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserClaims");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserLogins");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_Courses",
+                table: "Courses");
+
+            migrationBuilder.RenameTable(
+                name: "Courses",
+                newName: "Course");
+
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_Course",
+                table: "Course",
+                column: "Id");
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/20260630093737_AddIdentity.Designer.cs">
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using University.Data;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    [DbContext(typeof(UniversityDbContext))]
+    [Migration("20260630093737_AddIdentity")]
+    partial class AddIdentity
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SyllabusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("University.Data.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/20260630093956_Roles.cs">
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    /// <inheritdoc />
+    public partial class Roles : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql("INSERT INTO AspNetRoles (Name, NormalizedName, ConcurrencyStamp) VALUES ('Student', 'STUDENT', NEWID())");
+            migrationBuilder.Sql("INSERT INTO AspNetRoles (Name, NormalizedName, ConcurrencyStamp) VALUES ('Teacher', 'TEACHER', NEWID())");
+
+
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.Sql("DELETE FROM AspNetRoles WHERE NormalizedName IN ('STUDENT', 'TEACHER')");
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/20260630093956_Roles.Designer.cs">
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using University.Data;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    [DbContext(typeof(UniversityDbContext))]
+    [Migration("20260630093956_Roles")]
+    partial class Roles
+    {
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SyllabusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("University.Data.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Migrations/UniversityDbContextModelSnapshot.cs">
+// <auto-generated />
+using System;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using University.Data;
+
+#nullable disable
+
+namespace University.Data.Migrations
+{
+    [DbContext(typeof(UniversityDbContext))]
+    partial class UniversityDbContextModelSnapshot : ModelSnapshot
+    {
+        protected override void BuildModel(ModelBuilder modelBuilder)
+        {
+#pragma warning disable 612, 618
+            modelBuilder
+                .HasAnnotation("ProductVersion", "10.0.9")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LoginProvider")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("SyllabusId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("University.Data.Entities.Student", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Students");
+                });
+
+            modelBuilder.Entity("University.Data.Entities.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("University.Data.Entities.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+#pragma warning restore 612, 618
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Repositories/CourseRepositories/CourseRepository.cs">
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using University.Data.Entities;
+
+namespace University.Data.Repositories.CourseRepository;
+
+public class CourseRepository : ICourseRepository
+{
+    private readonly UniversityDbContext _context;
+
+    public CourseRepository(UniversityDbContext context)
+    {
+        _context = context;
+    }
+
+    public List<Course> GetAll()
+    {
+        return _context.Courses.ToList();
+    }
+
+    public Course? GetById(int id)
+    {
+        return _context.Courses.Find(id);
+    }
+
+    public void Add(Course course)
+    {
+        _context.Courses.Add(course);
+        _context.SaveChanges();
+    }
+
+    public void Update(Course course)
+    {
+        _context.Courses.Update(course);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var course = _context.Courses.Find(id);
+        if (course != null)
+        {
+            _context.Courses.Remove(course);
+            _context.SaveChanges();
+        }
+    }
+}
+</file>
+
+<file path="University.Data/Repositories/CourseRepositories/ICourseRepository.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using University.Data.Entities;
+
+namespace University.Data.Repositories.CourseRepository;
+
+public interface ICourseRepository
+{
+    List<Course> GetAll();
+    Course? GetById(int id);
+    void Add(Course course);
+    void Update(Course course);
+    void Delete(int id);
+}
+</file>
+
+<file path="University.Data/Repositories/StudentRepositories/IStudentRepository.cs">
+using System;
+using System.Collections.Generic;
+using System.Text;
+using University.Data.Entities;
+
+namespace University.Data.Repositories.StudentRepositories.StudentRepositories;
+
+public interface IStudentRepository
+{
+    List<Student> GetAll();
+    Student? GetById(int id);
+    void Add(Student student);
+    void Update(Student student);
+    void Delete(int id);
+}
+</file>
+
+<file path="University.Data/Repositories/StudentRepositories/StudentRepository.cs">
+using University.Data.Entities;
+using University.Data.Repositories.StudentRepositories.StudentRepositories;
+
+namespace University.Data.Repositories.StudentRepositories;
+
+public class StudentRepository : IStudentRepository
+{
+    private readonly UniversityDbContext _context;
+    public StudentRepository(UniversityDbContext context)
+    {
+        _context = context;
+    }
+
+    public List<Student> GetAll()
+    {
+        return _context.Students.ToList();
+    }
+
+    public Student? GetById(int id)
+    {
+        return _context.Students.Find(id);
+    }
+
+    public void Add(Student student)
+    {
+        _context.Students.Add(student);
+        _context.SaveChanges();
+    }
+
+    public void Update(Student student)
+    {
+        _context.Students.Update(student);
+        _context.SaveChanges();
+    }
+
+    public void Delete(int id)
+    {
+        var student = _context.Students.Find(id);
+        if (student != null)
+        {
+            _context.Students.Remove(student);
+            _context.SaveChanges();
+        }
+    }
+}
+</file>
+
+<file path="University.Data/University.Data.csproj">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.9" />
+  </ItemGroup>
+
+</Project>
+</file>
+
+<file path="University.Data/UniversityDbContext.cs">
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using University.Data.Entities;
+
+namespace University.Data;
+
+public class UniversityDbContext : IdentityDbContext<User , Role , int>
+{
+    public DbSet<Student> Students { get; set; }
+    public DbSet<Course> Courses { get; set; }
+
+    public UniversityDbContext(DbContextOptions<UniversityDbContext> options) : base(options)
+    {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(UniversityDbContext).Assembly);
+    }
+}
+</file>
+
+<file path="UniversitySystem.slnx">
+<Solution>
+  <Project Path="University.Api/University.Api.csproj" />
+  <Project Path="University.Core/University.Core.csproj" />
+  <Project Path="University.Data/University.Data.csproj" />
+</Solution>
+</file>
+
+</files>

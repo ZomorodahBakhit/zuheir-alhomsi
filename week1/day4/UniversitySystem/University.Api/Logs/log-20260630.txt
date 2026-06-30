@@ -1,0 +1,181 @@
+2026-06-30 15:32:55.547 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 15:32:56.869 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 15:32:56.871 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 15:32:57.507 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 15:32:57.507 +03:00 [INF] Hosting environment: Development
+2026-06-30 15:32:57.507 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+2026-06-30 15:33:42.392 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 15:33:43.270 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 15:33:43.272 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 15:33:44.638 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 15:33:44.638 +03:00 [INF] Hosting environment: Development
+2026-06-30 15:33:44.638 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+2026-06-30 17:20:03.179 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 17:20:03.965 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 17:20:03.967 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 17:20:04.786 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 17:20:04.786 +03:00 [INF] Hosting environment: Development
+2026-06-30 17:20:04.786 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+2026-06-30 17:25:11.536 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 17:25:11.891 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 17:25:11.892 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 17:25:12.112 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 17:25:12.112 +03:00 [INF] Hosting environment: Development
+2026-06-30 17:25:12.112 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+2026-06-30 17:25:18.067 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/index.html - null null
+2026-06-30 17:25:18.617 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/swagger-ui-bundle.js - null null
+2026-06-30 17:25:18.617 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/swagger-ui.css - null null
+2026-06-30 17:25:18.617 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/swagger-ui-standalone-preset.js - null null
+2026-06-30 17:25:18.626 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-30 17:25:18.649 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/index.html - 200 null text/html;charset=utf-8 596.5093ms
+2026-06-30 17:25:18.697 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - 200 14933 application/javascript; charset=utf-8 70.7452ms
+2026-06-30 17:25:18.714 +03:00 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2026-06-30 17:25:18.714 +03:00 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2026-06-30 17:25:18.716 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/swagger-ui.css - 200 152034 text/css 99.8097ms
+2026-06-30 17:25:18.716 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 99.6979ms
+2026-06-30 17:25:18.721 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_vs/browserLink - null null
+2026-06-30 17:25:18.776 +03:00 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2026-06-30 17:25:18.776 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 159.2795ms
+2026-06-30 17:25:18.842 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_vs/browserLink - 200 null text/javascript; charset=UTF-8 121.1657ms
+2026-06-30 17:25:18.971 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - null null
+2026-06-30 17:25:18.998 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/favicon-32x32.png - null null
+2026-06-30 17:25:19.001 +03:00 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2026-06-30 17:25:19.001 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/favicon-32x32.png - 200 628 image/png 3.5615ms
+2026-06-30 17:25:19.058 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 87.3736ms
+2026-06-30 17:25:47.522 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/ - null null
+2026-06-30 17:25:47.530 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/ - 301 null null 8.039ms
+2026-06-30 17:25:47.534 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/index.html - null null
+2026-06-30 17:25:47.543 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/index.html - 200 null text/html;charset=utf-8 9.2754ms
+2026-06-30 17:25:47.567 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_vs/browserLink - null null
+2026-06-30 17:25:47.570 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-30 17:25:47.572 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - 200 14933 application/javascript; charset=utf-8 2.0414ms
+2026-06-30 17:25:47.593 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_vs/browserLink - 200 null text/javascript; charset=UTF-8 25.7466ms
+2026-06-30 17:25:47.640 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - null null
+2026-06-30 17:25:47.692 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 51.6916ms
+2026-06-30 17:26:53.961 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 17:26:54.355 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 17:26:54.356 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 17:26:54.553 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 17:26:54.553 +03:00 [INF] Hosting environment: Development
+2026-06-30 17:26:54.553 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+2026-06-30 17:26:55.778 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/index.html - null null
+2026-06-30 17:26:56.173 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-30 17:26:56.173 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_vs/browserLink - null null
+2026-06-30 17:26:56.185 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/index.html - 200 null text/html;charset=utf-8 418.9349ms
+2026-06-30 17:26:56.187 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - 200 14933 application/javascript; charset=utf-8 14.573ms
+2026-06-30 17:26:56.263 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_vs/browserLink - 200 null text/javascript; charset=UTF-8 90.9303ms
+2026-06-30 17:26:56.294 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - null null
+2026-06-30 17:26:56.370 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 76.3719ms
+2026-06-30 17:26:58.222 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/index.html - null null
+2026-06-30 17:26:58.250 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/index.html - 200 null text/html;charset=utf-8 27.5884ms
+2026-06-30 17:26:58.254 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-30 17:26:58.254 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_vs/browserLink - null null
+2026-06-30 17:26:58.255 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - 200 14933 application/javascript; charset=utf-8 0.9325ms
+2026-06-30 17:26:58.280 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_vs/browserLink - 200 null text/javascript; charset=UTF-8 25.7374ms
+2026-06-30 17:26:58.304 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - null null
+2026-06-30 17:26:58.368 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 64.6312ms
+2026-06-30 17:28:48.740 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/index.html - null null
+2026-06-30 17:28:48.785 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/index.html - 200 null text/html;charset=utf-8 45.0373ms
+2026-06-30 17:28:48.807 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_vs/browserLink - null null
+2026-06-30 17:28:48.812 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-30 17:28:48.813 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - 200 14933 application/javascript; charset=utf-8 1.0289ms
+2026-06-30 17:28:48.824 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_vs/browserLink - 200 null text/javascript; charset=UTF-8 16.6642ms
+2026-06-30 17:28:48.889 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - null null
+2026-06-30 17:28:48.921 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 31.9603ms
+2026-06-30 17:29:26.940 +03:00 [INF] Request starting HTTP/2 POST https://localhost:7162/api/Auth/register - application/json 128
+2026-06-30 17:29:27.148 +03:00 [INF] Executing endpoint 'University.Api.Controllers.AuthController.Register (University.Api)'
+2026-06-30 17:29:27.230 +03:00 [INF] Route matched with {action = "Register", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[AutoWrapper.Wrappers.ApiResponse] Register(University.Core.Forms.AuthForm.RegisterForm) on controller University.Api.Controllers.AuthController (University.Api).
+2026-06-30 17:29:29.000 +03:00 [WRN] No instantiatable types implementing `IEntityTypeConfiguration` were found while scanning assembly 'University.Data, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.
+2026-06-30 17:29:31.217 +03:00 [INF] Executed DbCommand (132ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-06-30 17:29:31.501 +03:00 [INF] Executed DbCommand (8ms) [Parameters=[@normalizedUserName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @normalizedUserName
+2026-06-30 17:29:31.967 +03:00 [INF] Executed DbCommand (16ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (Size = 4000), @p2='?' (Size = 256), @p3='?' (DbType = Boolean), @p4='?' (DbType = Boolean), @p5='?' (DbType = DateTimeOffset), @p6='?' (Size = 256), @p7='?' (Size = 256), @p8='?' (Size = 4000), @p9='?' (Size = 4000), @p10='?' (DbType = Boolean), @p11='?' (Size = 4000), @p12='?' (DbType = Boolean), @p13='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+INSERT INTO [AspNetUsers] ([AccessFailedCount], [ConcurrencyStamp], [Email], [EmailConfirmed], [LockoutEnabled], [LockoutEnd], [NormalizedEmail], [NormalizedUserName], [PasswordHash], [PhoneNumber], [PhoneNumberConfirmed], [SecurityStamp], [TwoFactorEnabled], [UserName])
+OUTPUT INSERTED.[Id]
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13);
+2026-06-30 17:29:32.085 +03:00 [INF] Executed DbCommand (25ms) [Parameters=[@normalizedName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedName
+2026-06-30 17:29:32.144 +03:00 [INF] Executed DbCommand (5ms) [Parameters=[@normalizedRoleName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedRoleName
+2026-06-30 17:29:32.245 +03:00 [INF] Executed DbCommand (6ms) [Parameters=[@p='?' (DbType = Int32), @p1='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[UserId], [a].[RoleId]
+FROM [AspNetUserRoles] AS [a]
+WHERE [a].[UserId] = @p AND [a].[RoleId] = @p1
+2026-06-30 17:29:32.260 +03:00 [INF] Executed DbCommand (1ms) [Parameters=[@normalizedRoleName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[ConcurrencyStamp], [a].[Name], [a].[NormalizedName]
+FROM [AspNetRoles] AS [a]
+WHERE [a].[NormalizedName] = @normalizedRoleName
+2026-06-30 17:29:32.309 +03:00 [INF] Executed DbCommand (16ms) [Parameters=[@normalizedUserName='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedUserName] = @normalizedUserName
+2026-06-30 17:29:32.432 +03:00 [INF] Executed DbCommand (41ms) [Parameters=[@p0='?' (DbType = Int32), @p1='?' (DbType = Int32), @p16='?' (DbType = Int32), @p2='?' (DbType = Int32), @p3='?' (Size = 4000), @p17='?' (Size = 4000), @p4='?' (Size = 256), @p5='?' (DbType = Boolean), @p6='?' (DbType = Boolean), @p7='?' (DbType = DateTimeOffset), @p8='?' (Size = 256), @p9='?' (Size = 256), @p10='?' (Size = 4000), @p11='?' (Size = 4000), @p12='?' (DbType = Boolean), @p13='?' (Size = 4000), @p14='?' (DbType = Boolean), @p15='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SET NOCOUNT ON;
+INSERT INTO [AspNetUserRoles] ([RoleId], [UserId])
+VALUES (@p0, @p1);
+UPDATE [AspNetUsers] SET [AccessFailedCount] = @p2, [ConcurrencyStamp] = @p3, [Email] = @p4, [EmailConfirmed] = @p5, [LockoutEnabled] = @p6, [LockoutEnd] = @p7, [NormalizedEmail] = @p8, [NormalizedUserName] = @p9, [PasswordHash] = @p10, [PhoneNumber] = @p11, [PhoneNumberConfirmed] = @p12, [SecurityStamp] = @p13, [TwoFactorEnabled] = @p14, [UserName] = @p15
+OUTPUT 1
+WHERE [Id] = @p16 AND [ConcurrencyStamp] = @p17;
+2026-06-30 17:29:32.478 +03:00 [INF] Executing ObjectResult, writing value of type 'AutoWrapper.Wrappers.ApiResponse'.
+2026-06-30 17:29:32.510 +03:00 [INF] Executed action University.Api.Controllers.AuthController.Register (University.Api) in 5271.7638ms
+2026-06-30 17:29:32.512 +03:00 [INF] Executed endpoint 'University.Api.Controllers.AuthController.Register (University.Api)'
+2026-06-30 17:29:33.001 +03:00 [INF] Source:[::1] Request: POST https localhost:7162/api/Auth/register  {
+  "firstName": "tst",
+  "lastName": "string",
+  "email": "student@test.com",
+  "password": "Test@12345",
+  "role": "Student"
+} Responded with [200] in 6033ms
+2026-06-30 17:29:33.021 +03:00 [INF] Request finished HTTP/2 POST https://localhost:7162/api/Auth/register - 200 463 application/json 6081.3093ms
+2026-06-30 17:31:40.044 +03:00 [INF] Request starting HTTP/2 POST https://localhost:7162/api/Auth/login - application/json 83
+2026-06-30 17:31:40.049 +03:00 [INF] Executing endpoint 'University.Api.Controllers.AuthController.Login (University.Api)'
+2026-06-30 17:31:40.068 +03:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[AutoWrapper.Wrappers.ApiResponse] Login(University.Core.Forms.AuthForm.LoginForm) on controller University.Api.Controllers.AuthController (University.Api).
+2026-06-30 17:31:40.242 +03:00 [INF] Executed DbCommand (16ms) [Parameters=[@normalizedEmail='?' (Size = 256)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(2) [a].[Id], [a].[AccessFailedCount], [a].[ConcurrencyStamp], [a].[Email], [a].[EmailConfirmed], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UserName]
+FROM [AspNetUsers] AS [a]
+WHERE [a].[NormalizedEmail] = @normalizedEmail
+2026-06-30 17:31:40.516 +03:00 [INF] Executed DbCommand (21ms) [Parameters=[@userId='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT [a0].[Name]
+FROM [AspNetUserRoles] AS [a]
+INNER JOIN [AspNetRoles] AS [a0] ON [a].[RoleId] = [a0].[Id]
+WHERE [a].[UserId] = @userId
+2026-06-30 17:31:40.584 +03:00 [INF] Executing ObjectResult, writing value of type 'AutoWrapper.Wrappers.ApiResponse'.
+2026-06-30 17:31:40.592 +03:00 [INF] Executed action University.Api.Controllers.AuthController.Login (University.Api) in 524.101ms
+2026-06-30 17:31:40.592 +03:00 [INF] Executed endpoint 'University.Api.Controllers.AuthController.Login (University.Api)'
+2026-06-30 17:31:40.593 +03:00 [INF] Source:[::1] Request: POST https localhost:7162/api/Auth/login  {
+  "email": "student@test.com",
+  "password": "Test@12345",
+  "rememberMe": true
+} Responded with [200] in 545ms
+2026-06-30 17:31:40.594 +03:00 [INF] Request finished HTTP/2 POST https://localhost:7162/api/Auth/login - 200 577 application/json 550.0347ms
+2026-06-30 17:33:05.545 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/api/Students - null null
+2026-06-30 17:33:05.572 +03:00 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (Teacher)
+2026-06-30 17:33:05.588 +03:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-06-30 17:33:05.609 +03:00 [INF] Source:[::1] Request: GET https localhost:7162/api/Students   Responded with [401] in 62ms
+2026-06-30 17:33:05.609 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/api/Students - 401 119 application/json 64.2226ms
+2026-06-30 18:03:33.764 +03:00 [INF] User profile is available. Using 'C:\Users\LOQ\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-06-30 18:03:34.115 +03:00 [INF] Now listening on: https://localhost:7162
+2026-06-30 18:03:34.115 +03:00 [INF] Now listening on: http://localhost:5165
+2026-06-30 18:03:34.312 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-06-30 18:03:34.313 +03:00 [INF] Hosting environment: Development
+2026-06-30 18:03:34.313 +03:00 [INF] Content root path: C:\Users\LOQ\Desktop\Intern-Assignments\zuheir-alhomsi\week1\day4\UniversitySystem\University.Api
+2026-06-30 18:03:36.881 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/index.html - null null
+2026-06-30 18:03:37.393 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/index.html - 200 null text/html;charset=utf-8 528.9187ms
+2026-06-30 18:03:37.432 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - null null
+2026-06-30 18:03:37.432 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/_vs/browserLink - null null
+2026-06-30 18:03:37.445 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_framework/aspnetcore-browser-refresh.js - 200 14933 application/javascript; charset=utf-8 13.1812ms
+2026-06-30 18:03:37.541 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/_vs/browserLink - 200 null text/javascript; charset=UTF-8 109.3025ms
+2026-06-30 18:03:37.583 +03:00 [INF] Request starting HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - null null
+2026-06-30 18:03:37.667 +03:00 [INF] Request finished HTTP/2 GET https://localhost:7162/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 84.3371ms

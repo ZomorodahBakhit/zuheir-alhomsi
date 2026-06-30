@@ -1,11 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using University.Data.Entities;
 
 namespace University.Data;
 
-public class UniversityDbContext : DbContext
+public class UniversityDbContext : IdentityDbContext<User , Role , int>
 {
     public DbSet<Student> Students { get; set; }
+    public DbSet<Course> Courses { get; set; }
 
     public UniversityDbContext(DbContextOptions<UniversityDbContext> options) : base(options)
     {
